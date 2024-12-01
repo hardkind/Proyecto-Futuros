@@ -1,0 +1,195 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="refresh" content="0.01">  <!-- Esto recarga la página cada n segundos -->
+    <title>Posiciones Futuro</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+        }
+
+        table {
+            width: 370px;
+            margin: 0 auto;
+            border-collapse: calc();
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: center;
+            background-color: #ddd;
+        }
+
+        .pnl {
+            text-align: right;  /* Alinear los valores de PnL a la derecha */
+        }
+        .total-pnl {
+            font-weight: bold;
+            text-align: right;
+            padding: 10px;
+            background-color: #c2c2c2;
+            font-size: 22px;
+        }
+
+        .tittle-pnl-sumado{
+            font-weight: bold;
+            color: rgb(22, 22, 105);
+            font-size: 28px;
+            
+        }
+        .pnl-sumado {
+            font-weight: bold;
+            padding: 10px;
+            font-size: 29px;
+        }
+        .pnl_combined_cop {
+            font-size: 12px;
+            background-color: #f8f8f883;
+        }
+
+        .footer {
+            margin-top: 15px;
+            background-color: #f8f8f883;
+            font-size: 9px;
+            text-align: center;
+        }
+
+    </style>
+</head>
+
+
+<body>
+    
+<!-- "TOTAL BINANCE + BINGX  -->
+</table>
+<h1></h1>
+<table>
+<thead>
+    <tr>
+        <th class="tittle-pnl-sumado">TOTAL BINANCE + BINGX</th>
+    </tr>
+</thead>
+
+<tbody>
+    <tr class="total-pnl">
+        <td class="pnl-sumado"><strong>{{ total_pnl_combined }} USDT</strong></td>  <!-- Total combinado de PnL -->
+    </tr>
+
+
+    <tr class="total-pnl">
+        <td class="pnl_combined_cop"><strong>{{ total_pnl_combined_cop }} COP</strong></td> <!-- Agrega valor en pesos, clase modifica aspecto, (.py return y función round) -->
+    </tr>
+</tbody>
+</table>
+
+
+
+
+<!-- "POSICIONES ABIERTAS BINANCE  -->
+    <h1 style="text-align: center;">POSICIONES ABIERTAS FUTURO BINANCE</h1>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Criptomoneda</th>
+                <th>PnL</th>
+                <th>% Ganancia</th>
+
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for position in positions_binance %}
+                <tr>
+                    <td>{{ position.symbol }}</td>
+                    <td class="pnl">{{ position.pnl }}</td>  <!-- Aplicamos la clase "pnl" para alinear a la derecha -->
+                    <td class="pnl">{{ position.percentage }}%</td>
+
+                </tr>
+            {% endfor %}
+            <tr class="total-pnl">
+                <td><strong>Total PNL</strong></td>  <!-- "Total" en la primera columna -->
+                <td class="pnl"><strong>{{ total_pnl_binance }}</strong></td>  <!-- Total PnL en la segunda columna -->
+            </tr>
+        </tbody>
+    </table>
+
+<!-- "POSICIONES ABIERTAS BINGX  -->
+    <h1 style="text-align: center;">POSICIONES ABIERTAS FUTURO BINGX (M-USD)</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Criptomoneda</th>
+                <th>PnL</th>
+                <th>% Ganancia</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for position in positions_bingx %}
+                <tr>
+                    <td>{{ position.symbol }}</td>
+                    <td class="pnl">{{ position.pnl }}</td>           <!-- Aplicamos la clase "pnl" para alinear a la derecha -->
+                    <td class="pnl">{{ position.percentage }}%</td>
+
+                </tr>
+            {% endfor %}
+            <tr class="total-pnl">
+                <td><strong>Total PNL</strong></td>  <!-- "Total" en la primera columna -->
+                <td class="pnl"><strong>{{ total_pnl_bingx }}</strong></td>  <!-- Total PnL en la segunda columna -->
+            </tr>
+        </tbody>
+    </Table>
+
+
+
+
+
+
+
+    <!-- REPRODUCIR SONIDO GANANCIA > 10% -->
+    <audio id="alerta-sound" src="/static/alerta.mp3" preload="auto"></audio>
+
+    <script>
+        // Reproducir sonido solo si el porcentaje llega a 10%
+        const alarmSound = document.getElementById('alerta-sound');
+        const percentages = document.querySelectorAll('.pnl'); // Selecciona todos los porcentajes
+        let playAlarm = false;
+
+        // Verificar si la alarma ya se ha activado esta sesión
+        if (!localStorage.getItem('alarmTriggered')) {
+
+            // Usar una bandera para controlar la alarma
+            percentages.forEach((element) => {
+                const percentage = parseFloat(element.innerText.replace('%', ''));
+                if (percentage >= 10 ) {  // Alerta cuando el porcentaje es > 10
+                    playAlarm = true;                          // Activa la alarma
+                }
+            });
+
+            // Si se activa la alarma, reproducir el sonido y guardar en localStorage
+            if (playAlarm) {
+                alarmSound.play(); // Reproduce el sonido de la alarma
+                localStorage.setItem('alarmTriggered', 'true'); // Marca que la alarma ha sonado
+            }
+        }
+    </script>
+
+
+
+<!-- PIE DE PÁGINA -->
+    <div class="footer">
+        &copy; HARD KIND PARRA SÁENZ
+    </div>
+
+
+</body>
+</html>
