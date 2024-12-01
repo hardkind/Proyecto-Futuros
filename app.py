@@ -107,5 +107,3 @@ def index():
                            total_pnl_combined = total_pnl_combined,
                            total_pnl_combined_cop = total_pnl_combined_cop_formateado)
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
